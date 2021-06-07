@@ -1,5 +1,5 @@
 const isBoolean = (value)=> {
-    if(value && typeof value === "boolean" ){
+    if(typeof value === "boolean" ){
         return true;
     }
     return false;
@@ -34,7 +34,7 @@ const isFunction = (value)=> {
 }
 
 const isTrue = (value)=> {
-    if(value && value === true){
+    if(value === true){
         return true;
     }
     return false;

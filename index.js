@@ -30,19 +30,6 @@ class Pipeline {
         return this;
     }
 
-
-    /**
-    * Set the method to call on the pipes.
-    *
-    * @param  {string}  method
-    * @return this
-    */
-    via(method){
-        this.method = method;
- 
-        return this;
-    }
-
     /**
     * Breaks the loop.
     *
@@ -68,9 +55,11 @@ class Pipeline {
         if (!hasLength(this.pipes.length )) {
             return {'error' : 'No Pipeline specified.'};
         }
-
-        if (!isBoolean(this.break)) {
-            return {'error' : 'Break parameter value must be boolean.'};
+      
+        if(!isFunction(this.break)){
+            if (!isBoolean(this.break)) {
+                return {'error' : 'Break parameter value must be boolean.'};
+            }
         }
         
         var i;
@@ -78,8 +67,6 @@ class Pipeline {
 
         for (i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
-
-            response  = pipe;
             
             //Check if output from the last pipe was promise
             if (isPromise(response)) {
@@ -90,7 +77,7 @@ class Pipeline {
                     break;
                 }
             }else {
-                // Otherwise, call the next pipe with the last stage output
+                // Otherwise, call the next pipe with the last pipe output
                 if (isFunction(pipe)) {
                     response = pipe(response);
 
