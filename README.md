@@ -3,6 +3,9 @@
 # Sweet-Pipeline Package
 
 [![Build Status](https://travis-ci.com/bytesfield/sweet-pipeline.svg?branch=main)](https://travis-ci.com/bytesfield/sweet-pipeline)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bytesfield/sweet-pipeline/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/bytesfield/sweet-pipeline/?branch=main)
+
+<br />
 In Development Stage
 
 # Description
