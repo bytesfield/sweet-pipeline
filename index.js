@@ -47,13 +47,13 @@ class Pipeline {
     *
     * @return mixed
     */
-    thenReturn(){
+    return(){
         if (!isArray(this.pipes)) {
             return {'error' : 'Pipes must be in an array or object.'};
         }
         
-        if (!hasLength(this.pipes.length )) {
-            return {'error' : 'No Pipeline specified.'};
+        if (!hasLength(this.pipes.length)) {
+            return {'error' : 'No pipe specified.'};
         }
       
         if(!isFunction(this.break)){

@@ -27,7 +27,9 @@
   "devDependencies": {
     "jest": "^27.0.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "q": "^1.5.1"
+  },
   "jest": {
     "testEnvironment": "node"
   }
