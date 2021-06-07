@@ -54,15 +54,13 @@ const usdToBTC = (amount) => {
 };
 
 const applyTax = (amount) => {
-  return amount - (amount * tax);
+  return amount - amount * tax;
 };
 
 const pipes = [nairaToUSD, usdToBTC, applyTax];
 const pipeData = 100;
 
-const result = new Pipeline().send(pipeData)
-                             .through(pipes)
-                             .return();
+const result = new Pipeline().send(pipeData).through(pipes).return();
 console.log(result);
 /*
 Calculation
@@ -72,7 +70,7 @@ Second Process : 4000 x 10 = 40,000
 Third Process: 40000 - (40000 * 0.3)  = 28,000
 
 This will return (int) 28,000
-*
+*/
 ```
 
 With the example above the amount is passed to every pipe on the pipeline sequentially and the final result is returned.
