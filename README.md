@@ -2,6 +2,7 @@
 
 # Sweet-Pipeline Package
 
+[![Build Status](https://travis-ci.com/bytesfield/sweet-pipeline.svg?branch=main)](https://travis-ci.com/bytesfield/sweet-pipeline)
 In Development Stage
 
 # Description
