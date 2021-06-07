@@ -1,4 +1,4 @@
-<p align="center"><img src="/pipeline.jpg" alt="Sweet Pipeline Preview"></p>
+<p align="center"><img src="/images/pipeline.jpg" alt="Sweet Pipeline Preview"></p>
 
 # Sweet-Pipeline Package
 
