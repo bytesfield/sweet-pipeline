@@ -1,4 +1,4 @@
-
+const { isBoolean, isArray, hasLength, isPromise, isFunction, isTrue } = require('./helper');
 class Pipeline {
 
     /**
@@ -20,8 +20,13 @@ class Pipeline {
     * @return this
     */
     through(pipes){
-        this.pipes = Array.isArray(pipes) ? pipes : [];
 
+        if(isArray(pipes)){
+            this.pipes = Object.values(pipes);
+        }else{
+            this.pipes = pipes;
+        }
+        
         return this;
     }
 
@@ -36,38 +41,68 @@ class Pipeline {
         this.method = method;
  
         return this;
-     }
+    }
 
-     /**
+    /**
+    * Breaks the loop.
+    *
+    * @param  {boolean} value
+    * @return boolean
+    */
+    break(value = false){
+        this.break = value;
+
+        return this;
+    }
+
+    /**
     * Run the pipeline with a final destination.
     *
     * @return mixed
     */
-    async thenReturn(){
-
-        if (this.pipes.length === 0) {
-            return 'No Pipeline specified.';
+    thenReturn(){
+        if (!isArray(this.pipes)) {
+            return {'error' : 'Pipes must be in an array or object.'};
+        }
+        
+        if (!hasLength(this.pipes.length )) {
+            return {'error' : 'No Pipeline specified.'};
         }
 
+        if (!isBoolean(this.break)) {
+            return {'error' : 'Break parameter value must be boolean.'};
+        }
+        
         var i;
         var response = this.passable;
 
         for (i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
 
-            response  = await pipe;
+            response  = pipe;
             
-            // Output from the last stage was promise
-            if (response && typeof response.then === 'function') {
-                // Call the next stage only when the promise is fulfilled
+            //Check if output from the last pipe was promise
+            if (isPromise(response)) {
+                //Then Call the next pipe
                 response = response.then(pipe);
-            }else {
 
-                // Otherwise, call the next stage with the last stage output
-                if (typeof pipe === 'function') {
+                if(isTrue(this.break)){
+                    break;
+                }
+            }else {
+                // Otherwise, call the next pipe with the last stage output
+                if (isFunction(pipe)) {
                     response = pipe(response);
+
+                    if(isTrue(this.break)){
+                        break;
+                    }
                 } else {
                     response = pipe;
+
+                    if(isTrue(this.break)){
+                        break;
+                    }
                 }
             }
             
