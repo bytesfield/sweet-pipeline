@@ -1,3 +1,5 @@
+<p align="center"><img src="/pipeline.jpg" alt="Sweet Pipeline Preview"></p>
+
 # Sweet-Pipeline Package
 
 In Development Stage
