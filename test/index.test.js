@@ -102,7 +102,7 @@ describe("Pipeline Test", () => {
         new Pipeline().send(text)
                       .through([repeatTextAsync,capitalize,exclaimAsync])
                       .return()
-                      .then((value)=>{//
+                      .then((value)=>{
                          expect(value).toEqual('Pipeline, pipeline!');
                       })
                       .catch((error)=>{});

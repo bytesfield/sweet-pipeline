@@ -2,19 +2,20 @@
 
 # Sweet-Pipeline Package
 
+[![npm version](https://badge.fury.io/js/sweet-pipeline.svg)](https://badge.fury.io/js/sweet-pipeline)
+[![GitHub license](https://img.shields.io/github/license/bytesfield/sweet-pipeline)](https://github.com/bytesfield/sweet-pipeline/blob/main/LICENSE.md)
 [![Build Status](https://travis-ci.com/bytesfield/sweet-pipeline.svg?branch=main)](https://travis-ci.com/bytesfield/sweet-pipeline)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bytesfield/sweet-pipeline/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/bytesfield/sweet-pipeline/?branch=main)
-
+[![GitHub issues](https://img.shields.io/github/issues/bytesfield/sweet-pipeline)](https://github.com/bytesfield/sweet-pipeline/issues)
 <br />
-In Development Stage
 
 # Description
 
-Sweet-Pipeline is a node package for defining and executing a simple sequential flow of process to process using functional programming principle.
+Sweet-Pipeline is a node package for defining and executing a simple sequential flow from process to process using functional programming principle. This process is initiated by a payload that is passed to the pipeline from one pipe (process) to another and finally completes the entire process and returns the final result.
 
 ## Installation
 
-[Node](https://nodejs.org/en/) 13 + and [NPM](https://www.npmjs.com/) are required.
+[Node](https://nodejs.org/en/) 13 + is required.
 
 To get the latest version of Sweet-Pipeline, simply install it
 
@@ -24,37 +25,42 @@ npm install sweet-pipeline
 
 ## Usage
 
-Process which are referred to as pipes in a pipeline are callable functions or closures and anything that can be invoked.
+Processes which are referred to as pipes in the pipeline are callable functions, closures or anything that can be invoked.
+
+To begin require it at the top.
 
 ```javascript
 const Pipeline = require("sweet-pipeline");
 ```
 
-### Sync Usage
+### Synchronous (Sync) Usage
 
 This is an example where pipes returns a concrete value.
 
 ```javascript
 const pipes = [callablePipe1, callablePipe2, callablePipe3];
+const pipeData = { data: "data" };
 
 const pipeline = new Pipeline().send(pipeData).through(pipes).return();
 ```
 
-#### Example without break method
+#### Example without the break method
+
+The example below demonstrate a function `nairaToUSD()` that converts a Nigerian (NGN) naira amount to USD, another function `usdToBTC()` that converts the result to Bitcoin (BTC) and lastly `applyTax()` that applies tax to the conversion's final result. Without pipeline this can be implemented like this: `applyTax(usdToBTC(nairaToUSD(amount)))`
 
 _Note all data used here are dummy data, they are not real data_
 
 ```javascript
-const usdToNairaRate = 400;
-const btcToUSDRate = 10;
-const tax = 0.5;
+const usdToNairaRate = 200; // 1USD = N200
+const btcToUSDRate = 10; // 1BTC = 10USD
+const tax = 0.3; // 3%
 
 const nairaToUSD = (amount) => {
-  return amount * usdToNairaRate;
+  return amount / usdToNairaRate;
 };
 
 const usdToBTC = (amount) => {
-  return amount * btcToUSDRate;
+  return amount / btcToUSDRate;
 };
 
 const applyTax = (amount) => {
@@ -62,26 +68,28 @@ const applyTax = (amount) => {
 };
 
 const pipes = [nairaToUSD, usdToBTC, applyTax];
-const pipeData = 100;
+const pipeData = 10000;
 
 const result = new Pipeline().send(pipeData).through(pipes).return();
+
 console.log(result);
+
 /*
-Calculation
+Process Calculation
 
-First Process : 100 x 400 = 4,000
-Second Process : 4000 x 10 = 40,000
-Third Process: 40000 - (40000 * 0.3)  = 28,000
+First Process : 10000/200 = 50USD
+Second Process : 50/10 = 5BTC
+Third Process: 5 - (5 * 0.3)  = 3.5BTC
 
-This will return (int) 28,000
+This will return (int) 3.5BTC
 */
 ```
 
-With the example above the amount is passed to every pipe on the pipeline sequentially and the final result is returned.
+With the example above the amount is passed to every pipe on the pipeline sequentially which is processed by the pipes individually with there separate logics passed to the current result and the final result is returned.
 
 #### Example with break method
 
-You can also chain the pipeline class with a break method and pass a boolean of true to return the result of the first pipe on the pipeline that returns a true response and others will be ignored. This is applicable when you implementing a pipeline of services with the same logic or implementation or external service.
+You can also chain the pipeline class with a break method and pass a boolean of true, this will return the result of the first pipe on the pipeline that returns a true response and others will be ignored. This is applicable when you are implementing a pipeline of services with the same logic or implementation or external service.
 
 _Note by default the break method is false_
 
@@ -98,7 +106,7 @@ class SecondService {
   handle() {
     return {
       handler: "Second Service",
-      success: "The second service executed",
+      success: "The second service was executed",
     };
   }
 }
@@ -118,7 +126,7 @@ module.exports = {
 };
 ```
 
-Now using pipeline to return the service that first return a true response
+Now using pipeline to return the service that first return a true response.
 
 ```javascript
 const firstService = new FirstService();
@@ -140,32 +148,36 @@ const result = new Pipeline()
 console.log(result);
 
 /*
-  This will return
+  This will return because that pipe is the first pipe that return a true response
 
     { 
       "handler" : "Second Service",
-     "success" : "The second service executed"
+     "success" : "The second service was executed"
     }
 
   */
 ```
 
-### Async Usage
+### Asynchronous (async) Usage
 
-This is an example where at least one pipe or all the pipes returns a promise
+This is an example where at least one pipe or all the pipes returns a promise. The difference with the sync usage is the way the result is returned. If there is at least one pipe that returns a promise you will have to use the then() method to get the result.
 
 ```javascript
 var q = require("q");
 
 const repeatTextAsync = (text) => {
   var deferred = q.defer();
+
   deferred.resolve(text + ", " + text);
+
   return deferred.promise;
 };
 
 const capitalizeFirstLetterAsync = (text) => {
   var deferred = q.defer();
+
   deferred.resolve(text[0].toUpperCase() + text.substring(1));
+
   return deferred.promise;
 };
 
@@ -196,6 +208,8 @@ const result = new Pipeline()
 
 */
 ```
+
+The example above is an asynchronous implementation that returns a promise. The function ` repeatTextAsync` repeats a text passed to it and `capitalizeFirstLetterAsync` capitalizes the first letter of the first repeated text. When this is passed to the pipeline it will execute the first function and apply the second function's logic to the result and returns the final result.
 
 ### Changelog
 

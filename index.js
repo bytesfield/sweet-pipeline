@@ -16,7 +16,7 @@ class Pipeline {
     /**
     * Set the array of pipes.
     *
-    * @param  {array|mixed } pipes
+    * @param  {array|mixed} pipes
     * @return this
     */
     through(pipes){
@@ -43,7 +43,7 @@ class Pipeline {
     }
 
     /**
-    * Run the pipeline with a final destination.
+    * Run the pipeline with a final result.
     *
     * @return mixed
     */
@@ -68,7 +68,7 @@ class Pipeline {
         for (i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
             
-            //Check if output from the last pipe was promise
+            //Check if output from the last pipe was a promise
             if (isPromise(response)) {
                 //Then Call the next pipe
                 response = response.then(pipe);
