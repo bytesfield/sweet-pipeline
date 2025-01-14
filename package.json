@@ -1,10 +1,13 @@
 {
   "name": "sweet-pipeline",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sweet-Pipeline is a node package for defining and executing a simple sequential flow of process to process using functional programming principle",
-  "main": "index.js",
+  "main": "pipeline.ts",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
-    "test": "jest --forceExit --maxWorkers=1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -16,7 +19,8 @@
     "pipeline",
     "functional",
     "programming",
-    "javascript"
+    "javascript",
+    "typescript"
   ],
   "author": "Abraham Udele",
   "license": "MIT",
@@ -25,15 +29,10 @@
   },
   "homepage": "https://github.com/bytesfield/sweet-pipeline#readme",
   "devDependencies": {
-    "jest": "^27.0.1"
-  },
-  "dependencies": {
-    "q": "^1.5.1"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testMatch": [
-      "**/test/**/*.test.js"
-    ]
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }
