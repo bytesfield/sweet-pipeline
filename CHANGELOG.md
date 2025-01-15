@@ -18,6 +18,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Package now requires **Node.js 16.x** or higher.
 - Various development dependencies updated for compatibility with the latest versions.
 
+- ### Fixed
+- Improve the `then()` not to accept the next function, this is handled properly in the `Pipeline` class.
+
 
 ## [v2.0.1] - 2025-01-15
 
