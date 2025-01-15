@@ -1,4 +1,4 @@
-<p align="center"><img src="/images/pipeline.jpg" alt="Sweet Pipeline Preview"></p>
+<p><img src="/images/pipeline.jpg" alt="Sweet Pipeline Preview"></p>
 
 # Sweet-Pipeline Package
 
@@ -11,11 +11,11 @@
 
 # Description
 
-Sweet-Pipeline is a node package for defining and executing a simple sequential flow from process to process using functional programming principle. This process is initiated by a payload that is passed to the pipeline from one pipe (process) to another and finally completes the entire process and returns the final result.
+`Sweet Pipeline` is a flexible and powerful pipeline package for JavaScript/TypeScript, inspired by the Laravel pipeline design pattern. It enables you to define a simple sequential flow of processes leveraging on `functional programming` principles, making it easy to build complex workflows with a clear and readable structure.
 
 ## Installation
 
-[Node](https://nodejs.org/en/) 13 + is required.
+[Node](https://nodejs.org/en/) 14 + is required.
 
 To get the latest version of Sweet-Pipeline, simply install it
 
@@ -25,191 +25,128 @@ npm install sweet-pipeline
 
 ## Usage
 
-Processes which are referred to as pipes in the pipeline are callable functions, closures or anything that can be invoked.
+Processes which are referred to as `pipes` in the pipeline are callable `functions`, `closures` or anything that can be invoked.
 
 To begin require it at the top.
 
-```javascript
-const Pipeline = require("sweet-pipeline");
+```typescript
+import { Pipeline } from "sweet-pipeline"
 ```
 
-### Synchronous (Sync) Usage
+### Basic Usage
 
-This is an example where pipes returns a concrete value.
+The basic idea behind the `pipeline` is to send data through a series of steps. Each step (or "pipe") modifies the data and passes it to the next step.
 
-```javascript
-const pipes = [callablePipe1, callablePipe2, callablePipe3];
-const pipeData = { data: "data" };
+```typescript
+const pipeline = new Pipeline<number>();
 
-const pipeline = new Pipeline().send(pipeData).through(pipes).return();
+const result = await pipeline
+        .send(1)  // The initial data
+        .through([
+          (value) => value + 1,     // First step: Add 1
+          (value) => value * 2,     // Second step: Multiply by 2
+        ])
+        .then(result => {
+          console.log(result); // Output: 4 (1 + 1 = 2, 2 * 2 = 4)
+        });
 ```
 
-#### Example without the break method
+#### Pipes
 
-The example below demonstrate a function `nairaToUSD()` that converts a Nigerian (NGN) naira amount to USD, another function `usdToBTC()` that converts the result to Bitcoin (BTC) and lastly `applyTax()` that applies tax to the conversion's final result. Without pipeline this can be implemented like this: `applyTax(usdToBTC(nairaToUSD(amount)))`
+A `pipe` is a function that processes the data in the pipeline. Each pipe receives the data (`passable`) and can either return a value directly or a `Promise`.
 
-_Note all data used here are dummy data, they are not real data_
+##### Pipe as a Function
+A function that takes the current passable object and a next function. The next function calls the next pipe.
 
-```javascript
-const usdToNairaRate = 200; // 1USD = N200
-const btcToUSDRate = 10; // 1BTC = 10USD
-const tax = 0.3; // 3%
-
-const nairaToUSD = (amount) => {
-  return amount / usdToNairaRate;
-};
-
-const usdToBTC = (amount) => {
-  return amount / btcToUSDRate;
-};
-
-const applyTax = (amount) => {
-  return amount - amount * tax;
-};
-
-const pipes = [nairaToUSD, usdToBTC, applyTax];
-const pipeData = 10000;
-
-const result = new Pipeline().send(pipeData).through(pipes).return();
-
-console.log(result);
-
-/*
-Process Calculation
-
-First Process : 10000/200 = 50USD
-Second Process : 50/10 = 5BTC
-Third Process: 5 - (5 * 0.3)  = 3.5BTC
-
-This will return (int) 3.5BTC
-*/
+```typescript
+(value) => value + 1
 ```
 
-With the example above the amount is passed to every pipe on the pipeline sequentially which is processed by the pipes individually with there separate logics passed to the current result and the final result is returned.
+##### Pipe as an Object with `handle` method
+An object with a `handle` method that follows the same signature as the function pipe.
 
-#### Example with break method
-
-You can also chain the pipeline class with a break method and pass a boolean of true, this will return the result of the first pipe on the pipeline that returns a true response and others will be ignored. This is applicable when you are implementing a pipeline of services with the same logic or implementation or external service.
-
-_Note by default the break method is false_
-
-```javascript
-class FirstService {
-  handle() {
-    return {
-      handler: "First Service",
-      error: "The first service is not avalibale",
-    };
-  }
-}
-class SecondService {
-  handle() {
-    return {
-      handler: "Second Service",
-      success: "The second service was executed",
-    };
-  }
-}
-class ThirdService {
-  handle() {
-    return {
-      handler: "Third Service",
-      error: "The third service has an error",
-    };
-  }
-}
-
-module.exports = {
-  FirstService,
-  SecondService,
-  ThirdService,
+```typescript
+const pipeObject = {
+  handle: (value) => value * 2,
 };
 ```
 
-Now using pipeline to return the service that first return a true response.
+#### Handling Promises
 
-```javascript
-const firstService = new FirstService();
-const secondService = new SecondService();
-const thirdService = new ThirdService();
+You can use `async` pipes that return `promises`. The pipeline will `wait` for the promise to resolve before passing the result to the next pipe.
 
-const pipes = [
-  firstService.handle(),
-  secondService.handle(),
-  thirdService.handle(),
-];
-
-const result = new Pipeline()
-  .send(pipeData)
-  .through(pipes)
-  .break(true)
-  .return();
-
-console.log(result);
-
-/*
-  This will return because that pipe is the first pipe that return a true response
-
-    { 
-      "handler" : "Second Service",
-     "success" : "The second service was executed"
-    }
-
-  */
+```typescript
+const result = await new Pipeline<number>()
+        .send(1)
+        .through([
+          async (value) => value + 1,     // First step: Add 1 (async)
+          async (value) => value * 2,     // Second step: Multiply by 2 (async)
+        ])
+        .then(result => console.log(result)); // Output: 4
 ```
 
-### Asynchronous (async) Usage
+#### Breaking the Pipeline
 
-This is an example where at least one pipe or all the pipes returns a promise. The difference with the sync usage is the way the result is returned. If there is at least one pipe that returns a promise you will have to use the then() method to get the result.
+You can `break` out of the pipeline early by using the `.break()` method. If a pipe returns `true` for the `break` condition, the pipeline will stop processing further pipes.
 
-```javascript
-var q = require("q");
-
-const repeatTextAsync = (text) => {
-  var deferred = q.defer();
-
-  deferred.resolve(text + ", " + text);
-
-  return deferred.promise;
-};
-
-const capitalizeFirstLetterAsync = (text) => {
-  var deferred = q.defer();
-
-  deferred.resolve(text[0].toUpperCase() + text.substring(1));
-
-  return deferred.promise;
-};
-
-module.exports = {
-  repeatTextAsync,
-  capitalizeFirstLetterAsync,
-};
-
-const pipes = [repeatTextAsync, capitalizeFirstLetterAsync];
-
-const text = "Hello";
-
-const result = new Pipeline()
-  .send(text)
-  .through(asyncPipes)
-  .return()
-  .then((value) => {
-    console.log(value);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
-/*
-  This will return
-  
-  Hello, hello
-
-*/
+```typescript
+const result = await new Pipeline<number>()
+        .send(1)
+        .through([
+          (value) => value + 1,     // First step: Add 1
+          (value) => value * 2,     // Second step: Multiply by 2
+        ])
+        .break(true)  // Stop after the first pipe
+        .then(result => console.log(result)); // Output: 2 (1 + 1)
 ```
 
-The example above is an asynchronous implementation that returns a promise. The function ` repeatTextAsync` repeats a text passed to it and `capitalizeFirstLetterAsync` capitalizes the first letter of the first repeated text. When this is passed to the pipeline it will execute the first function and apply the second function's logic to the result and returns the final result.
+#### Chaining with `then`
+
+The `then` method allows you to specify the final step in the pipeline after all pipes have been executed. This is where you define the ultimate result you want to achieve after passing through the pipeline.
+
+
+```typescript
+const result = await new Pipeline<number>()
+        .send(1)
+        .through([
+          (value) => value + 1,     // Add 1
+          (value) => value * 2,     // Multiply by 2
+        ])
+        .then(result => {
+          console.log(result); // Output: 4
+          return result * 2;   // You can also return a value for further chaining
+        })
+        .then(console.log);     // Output: 8
+```
+
+### API
+#### `send(passable: T): this`
+Sets the initial data (`passable`) that will be passed through the `pipeline`.
+
+```typescript
+pipeline.send(10);
+```
+
+#### `through(pipes: Pipe<T>[] | Pipe<T>): this`
+Sets the pipes (steps) that will transform the data. This can be an array of pipes, which can be `functions` or `objects` with a `handle` method
+
+```typescript
+pipeline.through([
+  (value) => value + 1,
+  (value) => value * 2,
+]);
+
+```
+
+#### `then(destination: (value: T) => Promise<T>): Promise<T>`
+Executes the `pipeline` and returns the final result. Pipes are reduced into a single composed function that calls each pipe in sequence. The destination is the final step of the pipeline.
+
+```typescript
+const result = await pipeline.then(value => value + 5);
+```
+
+#### Note
+_While `Sweet Pipeline` follows many `functional programming` principles—such as immutability, first-class functions, composition, and higher-order functions—it doesn't enforce pure functional programming strictly. It still allows for impure functions (if the user decides to use them), and side effects can be introduced in the pipes. However, if used correctly with pure functions, the package aligns well with functional programming principles_
 
 ### Changelog
 
@@ -221,14 +158,16 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### Security
 
-If you discover any security related issues, please email abrahamudele@gmail instead of using the issue tracker.
+If you discover any security related issues, please email `abrahamudele@gmail.com` instead of using the issue tracker.
 
 ## Credits
 
-- [Abraham Udele](https://github.com/bytesfield) <br/>
-  Find me on <br/>
-  <a href="https://twitter.com/SaintAbrahams/">Twitter.</a> <br/>
-  <a href="https://www.linkedin.com/in/abraham-udele-246003130/">Linkedin.</a>
+  ### Abraham Udele (Software Engineer) <br/>
+  - Find me on <br/>
+  <a href="https://www.abrahamudele.com">Website.</a> <br/>
+  <a href="https://github.com/bytesfield/">Github.</a> <br/>
+  <a href="https://x.com/mr_udele/">X (Twitter).</a> <br/>
+  <a href="https://www.linkedin.com/in/abrahamudele/">Linkedin.</a>
 
 ## License
 
