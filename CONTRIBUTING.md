@@ -57,7 +57,7 @@ Before submitting a pull request, make sure you:
 - **Code Style**: Follow the project's TypeScript code style and standards.
 - **Tests**: Your pull request won't be accepted unless it includes tests. Use [Jest](https://jestjs.io/) for unit testing.
 - **Update Documentation**: Changes in functionality should always be reflected in the documentation.
-- **Follow SemVer**: Ensure compatibility with the versioning scheme [SemVer v2.0.0](https://semver.org/).
+- **Follow SemVer**: Ensure compatibility with the versioning scheme [SemVer v2.0.1](https://semver.org/).
 - **Atomic Pull Requests**: One feature or fix per pull request to keep the contributions clear and manageable.
 
 **Thank you for contributing!**

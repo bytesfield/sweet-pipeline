@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ---
 
-## [v2.0.0] - 2025-01-15
+## [v2.0.1] - 2025-01-15
 
 ### Added
 - Refactored the pipeline to fully support TypeScript, improving type safety and code clarity.
