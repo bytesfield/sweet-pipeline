@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2022", // Use a more recent target for modern features
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./dist",
@@ -10,8 +10,13 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "lib": ["ES6"]
+    "lib": ["ES2022"], // Use ES2022 for better compatibility with Node.js 22
+    "allowSyntheticDefaultImports": true // Ensures compatibility with default imports
   },
   "include": ["src/**/*.ts", "test/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "**/*.spec.ts"],
+  "ts-node": {
+    "skipIgnore": true, // Ensures ts-node does not ignore certain files
+    "transpileOnly": true // Speeds up execution for testing purposes
+  }
 }
