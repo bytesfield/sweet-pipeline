@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ---
 
+## [v2.0.4] - 2025-01-15
+### Added
+- Added TypeScript declaration file (`.d.ts`) to the npm package to provide type definitions for consumers of the package.
+
+### Fixed
+- Ensured that the TypeScript declaration files are included when publishing the package by updating the `.npmignore` file to include `dist/*.d.ts`.
+
+
 ## [v2.0.3] - 2025-01-15
 ### Added
 - Added TypeScript declaration file (`pipeline.d.ts`) for better TypeScript support.
