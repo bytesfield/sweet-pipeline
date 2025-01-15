@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ---
 
+## [v2.0.3] - 2025-01-15
+### Added
+- Added TypeScript declaration file (`pipeline.d.ts`) for better TypeScript support.
+
+### Fixed
+- Fixed TypeScript errors related to missing declaration files (`TS7016`), improving compatibility for TypeScript users.
+
+
 ## [v2.0.2] - 2025-01-15
 
 ### Added
