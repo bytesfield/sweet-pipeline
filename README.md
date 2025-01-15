@@ -15,7 +15,7 @@
 
 ## Installation
 
-[Node](https://nodejs.org/en/) 14 + is required.
+[Node](https://nodejs.org/en/) 16 + is required.
 
 To get the latest version of Sweet-Pipeline, simply install it
 

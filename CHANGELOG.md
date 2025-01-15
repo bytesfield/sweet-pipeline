@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ---
 
+## [v2.0.2] - 2025-01-15
+
+### Added
+- Minimum Node.js version updated to **16.x**.
+- Development dependencies updated:
+    - **TypeScript** to **v5.7.3**.
+    - **ts-node** to **v10.9.2**.
+    - **Jest** and **ts-jest** updated to the latest versions.
+
+### Changed
+- Package now requires **Node.js 16.x** or higher.
+- Various development dependencies updated for compatibility with the latest versions.
+
+
 ## [v2.0.1] - 2025-01-15
 
 ### Added
