@@ -1,6 +1,6 @@
 {
   "name": "sweet-pipeline",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sweet-Pipeline is a node package for defining and executing a simple sequential flow of process to process using functional programming principle",
   "main": "index.js",
   "scripts": {
