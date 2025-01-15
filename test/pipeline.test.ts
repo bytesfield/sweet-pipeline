@@ -1,7 +1,5 @@
 import { Pipeline } from '../pipeline';
-import {PipeFunction} from "../types/pipes";
-import {addOnePipe, multiplyByTwoPipe} from "../helpers/pipe-objects";
-import {MultiplyByThreePipe} from "../helpers/pipe-class";
+import {addOnePipe, MultiplyByThreePipe, multiplyByTwoPipe} from "../helpers";
 
 describe('Pipeline Class Tests', () => {
     let pipeline: Pipeline<number>;
@@ -71,16 +69,20 @@ describe('Pipeline Class Tests', () => {
     });
 
     test('should handle asynchronous pipes correctly', async () => {
-        const asyncPipe: PipeFunction<number> = async (value, next) => {
-            const result = await next(value + 2);  // Asynchronous operation
+        // Define the asynchronous pipe
+        const asyncPipe: (value: number) => Promise<number> = async (value) => {
+            const result = value + 2;  // Asynchronous operation (simulated by a simple delay)
             return result * 2;  // Multiply the result by 2
         };
 
+        const pipeline = new Pipeline<number>();
+
         const result = await pipeline
-            .send(3)
-            .through([asyncPipe])
-            .then(async (value) => value);
+            .send(3)  // The initial data
+            .through([asyncPipe])  // Apply the asynchronous pipe
+            .then(async (value) => value);  // Final result
 
         expect(result).toBe(10);  // (3 + 2) * 2 = 10
     });
+
 });

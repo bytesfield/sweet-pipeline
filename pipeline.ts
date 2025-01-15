@@ -38,15 +38,17 @@ export class Pipeline<T> {
             return destination(this.passable);
         }
 
-        // Reduce the pipes into a single composed function
+        // Reduce the pipes into a single composed function, handling next internally
         const pipeline = this.pipes.reduceRight(
             (next: (value: T) => Promise<T>, pipe: Pipe<T>) => {
                 return async (passable: T): Promise<T> => {
                     if (this.isPipeFunction(pipe)) {
-                        return pipe(passable, next);
+                        const result = await pipe(passable);
+                        return next(result);
                     }
                     if (this.isPipeObject(pipe)) {
-                        return pipe.handle(passable, next);
+                        const result = await pipe.handle(passable);
+                        return next(result);
                     }
                     throw new Error('Pipe must be a function or an object with a "handle" method.');
                 };

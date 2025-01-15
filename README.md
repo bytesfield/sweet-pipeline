@@ -15,7 +15,7 @@
 
 ## Installation
 
-[Node](https://nodejs.org/en/) 14 + is required.
+[Node](https://nodejs.org/en/) 16 + is required.
 
 To get the latest version of Sweet-Pipeline, simply install it
 
@@ -62,13 +62,43 @@ A function that takes the current passable object and a next function. The next 
 (value) => value + 1
 ```
 
-##### Pipe as an Object with `handle` method
+```typescript
+export const addOnePipe: (value: number) => Promise<number> = async (value) => {
+  return value + 1;  // Add 1 and return the result
+};
+```
+
+##### Pipe as an `Object` or `Class` with `handle` method
 An object with a `handle` method that follows the same signature as the function pipe.
 
 ```typescript
 const pipeObject = {
   handle: (value) => value * 2,
 };
+```
+```typescript
+export class MultiplyByTwoPipe {
+  async handle(value: number): Promise<number> {
+    return value * 2;  // Multiply by 2 and return the result
+  }
+}
+```
+
+##### Combining `Object` or `Class` with `handle` method and a `Function`
+An object/class with a `handle` method that follows the same signature as the function pipe can be passed.
+
+```typescript
+const pipeline = new Pipeline<number>();
+
+const result = await pipeline
+        .send(1)  // The initial data
+        .through([
+          addOnePipe,     // First step: Add 1 (Function)
+          new MultiplyByTwoPipe(),     // Second step: Multiply by 2 (Class)
+        ])
+        .then(result => {
+          console.log(result); // Output: 4 (1 + 1 = 2, 2 * 2 = 4)
+        });
 ```
 
 #### Handling Promises

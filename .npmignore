@@ -7,3 +7,16 @@ components
 coverage
 *.swp
 .idea
+
+# Ignore source files
+src/
+
+# Ignore TypeScript files
+*.ts
+
+# Ignore test files
+test/
+*.spec.ts
+
+# Do not ignore the dist folder (compiled JavaScript files)
+!dist/
