@@ -4,6 +4,8 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
