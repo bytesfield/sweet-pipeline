@@ -22,4 +22,4 @@ test/
 !dist/
 
 # Ensure .d.ts files are not excluded
-!dist/*.d.ts
+!dist/**/*.d.ts
